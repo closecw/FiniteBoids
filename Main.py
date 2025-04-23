@@ -32,15 +32,15 @@ class BoidApp:
     def update_frame(self):
         self.canvas.delete("all")
 
-        # steer all boids away from edge
+        # Steer all boids away from edges
         for boid in self.boids:
-            if boid.position.x < ((self.center.x - self.width/2) + self.boid_turn_margin): #left
+            if boid.position.x < ((self.center.x - self.width/2) + self.boid_turn_margin): # Left
                 boid.velocity.x = boid.velocity.x + boid.turn_factor
-            if boid.position.x > ((self.center.x + self.width/2) - self.boid_turn_margin): #right
+            if boid.position.x > ((self.center.x + self.width/2) - self.boid_turn_margin): # Right
                 boid.velocity.x = boid.velocity.x - boid.turn_factor
-            if boid.position.y > ((self.center.y + self.height/2) - self.boid_turn_margin): #bottom
+            if boid.position.y > ((self.center.y + self.height/2) - self.boid_turn_margin): # Bottom
                 boid.velocity.y = boid.velocity.y - boid.turn_factor
-            if boid.position.y < ((self.center.y - self.height/2) + self.boid_turn_margin): #top
+            if boid.position.y < ((self.center.y - self.height/2) + self.boid_turn_margin): # Top
                 boid.velocity.y = boid.velocity.y + boid.turn_factor
 
         for boid in self.boids:
@@ -55,7 +55,8 @@ class BoidApp:
         points = self.get_triangle_points(x, y, angle, size)
         self.canvas.create_polygon(points, fill="white")
 
-    def get_triangle_points(self, x, y, angle, size):
+    @staticmethod
+    def get_triangle_points(x, y, angle, size):
         front = (x + size * math.cos(angle), y + size * math.sin(angle))
         left = (x + size * math.cos(angle + 2.5), y + size * math.sin(angle + 2.5))
         right = (x + size * math.cos(angle - 2.5), y + size * math.sin(angle - 2.5))
