@@ -11,12 +11,16 @@ class Vec:
     def __sub__(self, other):
         return Vec(self.x - other.x, self.y - other.y)
 
-    def __div__(self, value):
+    def __truediv__(self, value):
         if value != 0:
             return Vec(self.x / value, self.y / value)
+        else:
+            return Vec(0, 0)
 
     def __mul__(self, value):
         return Vec(self.x * value, self.y * value)
+
+    __rmul__ = __mul__      # Scalar * Vector logic
 
     def magnitude(self):
         return math.sqrt(self.x ** 2 + self.y ** 2)
@@ -29,12 +33,14 @@ class Vec:
         if mag != 0:
             self.x /= mag
             self.y /= mag
+        return self
 
     def limit(self, limit):
         mag = self.magnitude()
         if mag > limit:
             self.x *= limit / mag
             self.y *= limit / mag
+        return self
 
     def heading(self):
         return math.atan2(self.y, self.x)
@@ -53,9 +59,3 @@ class Vec:
 
     def __str__(self):
         return "({}, {})".format(self.x, self.y)
-
-def main():
-    print("done")
-
-if __name__ == "__main__":
-    main()
