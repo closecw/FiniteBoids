@@ -1,28 +1,102 @@
 import Vec as vec
-import random as rand
 
+max_speed = 5
 class Boid:
-    def __init__(self, x, y, vx=3, vy=3, turn_speed=0.2):
-        self.position = vec.Vec(x,y)
-        self.velocity = vec.Vec(vx, vy)
+    def __init__(self, x, y, vx=3, vy=3, turn_speed=0.5):
+        self.position = vec.Vec(x,y)        # Position as a vector
+        self.velocity = vec.Vec(vx, vy)     # Velocity as a vector
         self.turn_factor = turn_speed
 
-    def separate(self, boids):
-        # returns a vector
-        return vec.Vec(0, 0)
+    def separation(self, boids):
+        desired_separation = 2.0
+        steer = vec.Vec(0, 0)
+        count = 0
+        for boid in boids:
+            if boid is not self:
+                dist = vec.Vec.distance(self.position, boid.position)
+                if 0 < dist < desired_separation:
+                    diff = self.position - boid.position
+                    diff.normalize()
+                    diff /= dist
+                    steer += diff
+                    count += 1
+
+        if count > 0:
+            steer /= count
+        if steer.magnitude() > 0:
+            steer.normalize()
+            steer *= self.turn_factor
+            steer -= self.velocity
+            steer.limit(self.turn_factor)
+            return steer
+        else:
+            return steer
 
     def alignment(self, boids):
-        # returns a vector
-        return vec.Vec(0, 0)
+        prefer_distance = 5.0
+        velo_sum = vec.Vec(0, 0)
+        steer = vec.Vec(0, 0)
+        count = 0
+        for boid in boids:
+            if boid is not self:
+                dist = vec.Vec.distance(self.position, boid.position)
+                if 0 < dist < prefer_distance:
+                    velo_sum += boid.velocity
+                    count += 1
+
+        if count > 0:
+            avg = velo_sum / count
+            avg.normalize()
+            avg *= self.turn_factor
+            steer = avg - self.velocity
+            steer.limit(self.turn_factor)
+            return steer
+        else:
+            return steer
 
     def cohesion(self, boids):
-        # returns a vector
-        return vec.Vec(0, 0)
+        prefer_distance = 5.0
+        center = vec.Vec(0, 0)
+        steer = vec.Vec(0, 0)
+        count = 0
+        for boid in boids:
+            if boid is not self:
+                dist = vec.Vec.distance(self.position, boid.position)
+                if 0 < dist < prefer_distance:
+                    center += boid.position
+                    count += 1
 
-    def next(self, boids):
-        v1 = self.separate(boids)
-        v2 = self.alignment(boids)
-        v3 = self.cohesion(boids)
+        if count > 0:
+            center /= count
+            desired = center - self.position
+            desired.normalize()
+            desired *= self.turn_factor
+            steer = desired - self.velocity
+            steer.limit(self.turn_factor)
+            return steer
+        else:
+            return steer
 
-        self.velocity = self.velocity + v1 + v2 + v3
-        self.position = self.position + self.velocity
+    def avoid_walls(self, width, height, margin):
+        steer = vec.Vec(0, 0)
+        if self.position.x < margin:
+            steer.x = self.turn_factor
+        if self.position.x > width - margin:
+            steer.x = -self.turn_factor
+        if self.position.y < margin:
+            steer.y = self.turn_factor
+        if self.position.y > height - margin:
+            steer.y = -self.turn_factor
+        return steer
+
+
+    def next(self, boids, width, height, margin=50):
+        s_f = self.separation(boids)
+        a_f = self.alignment(boids)
+        c_f = self.cohesion(boids)
+        if width and height:
+            a_w_f = self.avoid_walls(self.position.x, self.position.y, margin)
+
+        self.velocity += s_f + a_f + c_f + a_w_f
+        self.velocity.limit(max_speed)
+        self.position += self.velocity

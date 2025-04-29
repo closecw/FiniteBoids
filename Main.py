@@ -5,15 +5,15 @@ import Boid as b
 import Vec as vec
 
 class BoidApp:
-    def __init__(self, root, width=800, height=600, num_boids=20, boid_turn_margin=50):
+    def __init__(self, root, width=800, height=600, num_boids=50, boid_turn_margin=0.5):
         self.root = root
         self.width = width
         self.height = height
         self.center = vec.Vec(self.width / 2, self.height / 2)
         self.canvas = tk.Canvas(root, width=width, height=height, bg="black")
-        self.canvas.pack(fill=tk.BOTH, expand=True)
+        self.canvas.pack(fill="both", expand=True)
 
-        self.boids = [b.Boid(random.randint(0, 50) + width/2, random.randint(0, 50) + height/2) for _ in range(num_boids)]
+        self.boids = [b.Boid(random.randint(0, 50) + width / 2, random.randint(0, 50) + height / 2) for _ in range(num_boids)]
         self.boid_turn_margin = boid_turn_margin
 
         self.resize_event_count = 0
@@ -32,19 +32,8 @@ class BoidApp:
     def update_frame(self):
         self.canvas.delete("all")
 
-        # Steer all boids away from edges
         for boid in self.boids:
-            if boid.position.x < ((self.center.x - self.width/2) + self.boid_turn_margin): # Left
-                boid.velocity.x = boid.velocity.x + boid.turn_factor
-            if boid.position.x > ((self.center.x + self.width/2) - self.boid_turn_margin): # Right
-                boid.velocity.x = boid.velocity.x - boid.turn_factor
-            if boid.position.y > ((self.center.y + self.height/2) - self.boid_turn_margin): # Bottom
-                boid.velocity.y = boid.velocity.y - boid.turn_factor
-            if boid.position.y < ((self.center.y - self.height/2) + self.boid_turn_margin): # Top
-                boid.velocity.y = boid.velocity.y + boid.turn_factor
-
-        for boid in self.boids:
-            boid.next(self.boids)
+            boid.next(self.boids, self.width, self.height, self.boid_turn_margin)
             self.draw_boid(boid)
         self.root.after(16, self.update_frame)  # ~60 FPS
 
