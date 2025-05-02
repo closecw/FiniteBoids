@@ -10,6 +10,7 @@ class Boid:
     def separation(self, boids):
         desired_separation = 2.0
         steer = vec.Vec(0, 0)
+        #diff = vec.Vec(0, 0)
         count = 0
         for boid in boids:
             if boid is not self:
@@ -26,7 +27,7 @@ class Boid:
         if steer.magnitude() > 0:
             steer.normalize()
             steer *= self.turn_factor
-            steer -= self.velocity
+            #steer -= self.velocity
             steer.limit(self.turn_factor)
             return steer
         else:
@@ -55,23 +56,23 @@ class Boid:
             return steer
 
     def cohesion(self, boids):
-        prefer_distance = 5.0
+        visible_distance = 7.5
         center = vec.Vec(0, 0)
+        visible_positions = vec.Vec(0, 0)
         steer = vec.Vec(0, 0)
         count = 0
         for boid in boids:
             if boid is not self:
                 dist = vec.Vec.distance(self.position, boid.position)
-                if 0 < dist < prefer_distance:
-                    center += boid.position
+                if 0 < dist < visible_distance:
+                    visible_positions += boid.position
                     count += 1
 
         if count > 0:
-            center /= count
+            center = (visible_positions / count)
             desired = center - self.position
             desired.normalize()
             desired *= self.turn_factor
-            steer = desired - self.velocity
             steer.limit(self.turn_factor)
             return steer
         else:
@@ -94,6 +95,7 @@ class Boid:
         s_f = self.separation(boids)
         a_f = self.alignment(boids)
         c_f = self.cohesion(boids)
+        a_w_f = vec.Vec(0, 0)
         if width and height:
             a_w_f = self.avoid_walls(self.position.x, self.position.y, margin)
 

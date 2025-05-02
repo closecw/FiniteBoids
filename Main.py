@@ -5,7 +5,7 @@ import Boid as b
 import Vec as vec
 
 class BoidApp:
-    def __init__(self, root, width=800, height=600, num_boids=50, boid_turn_margin=0.5):
+    def __init__(self, root, width=800, height=600, num_boids=50, boid_turn_margin=1):
         self.root = root
         self.width = width
         self.height = height
@@ -13,7 +13,8 @@ class BoidApp:
         self.canvas = tk.Canvas(root, width=width, height=height, bg="black")
         self.canvas.pack(fill="both", expand=True)
 
-        self.boids = [b.Boid(random.randint(0, 50) + width / 2, random.randint(0, 50) + height / 2) for _ in range(num_boids)]
+        starting_pos = range(0, num_boids)
+        self.boids = [b.Boid(starting_pos[_] + width / 2, starting_pos[_] + height / 2, random.randint(-5, 5), random.randint(-5,5)) for _ in range(num_boids)]
         self.boid_turn_margin = boid_turn_margin
 
         self.resize_event_count = 0
