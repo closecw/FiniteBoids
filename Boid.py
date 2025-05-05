@@ -6,7 +6,7 @@ class Boid:
     Class for a Boid object, the main object in the simulation.
     Defines all behaviors of the boid according to the algorithm.
     """
-    def __init__(self, x, y, vx, vy, turn_speed=1.1):
+    def __init__(self, x, y, vx, vy, turn_speed=1.4):
         """
         Constructor for a Boid object. Represents position and velocity as 2D vectors.
         :param x: X position.
@@ -94,7 +94,7 @@ class Boid:
             return desired
         return vec.Vec(0, 0)
 
-    def avoid_walls(self, width, height, margin):
+    def avoid_walls(self, width, height, margin=20):
         """
         Method for avoiding walls.
         :param width: Width of the window.
@@ -114,13 +114,12 @@ class Boid:
         return steer
 
 
-    def next(self, boids, width, height, margin=50):
+    def next(self, boids, width, height):
         """
         Method for updating the Boid object's position and velocity.
         :param boids: List of Boid objects.
         :param width: Width of the window.
         :param height: Height of the window.
-        :param margin: Margin for avoiding walls.
         :return: Boid's position added to its new velocity.
         """
         s_f = self.separation(boids)
@@ -128,7 +127,7 @@ class Boid:
         c_f = self.cohesion(boids)
         a_w_f = vec.Vec(0, 0)
         if width and height:
-            a_w_f = self.avoid_walls(width, height, margin)
+            a_w_f = self.avoid_walls(width, height)
 
         self.velocity += s_f + a_f + c_f + a_w_f
         self.velocity.limit(max_speed)

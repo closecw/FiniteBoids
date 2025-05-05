@@ -10,14 +10,13 @@ class BoidApp:
     Defines the window, boids, and configuration.
     This is the file that should be run.
     """
-    def __init__(self, root, width=800, height=600, num_boids=75, boid_turn_margin=5.0):
+    def __init__(self, root, width=800, height=600, num_boids=75):
         """
         Constructor for the BoidApp, the main application.
         :param root: Root window, everything will be drawn on this.
         :param width: Width of the window.
         :param height: Height of the window.
         :param num_boids: Number of boids to create.
-        :param boid_turn_margin: Margin for avoiding walls.
         """
         self.root = root
         self.width = width
@@ -34,7 +33,6 @@ class BoidApp:
             self.boids.append(b.Boid(random.uniform(0, width), random.uniform(0, height), speed * math.cos(angle), speed * math.sin(angle)))
 
         # Property configuration
-        self.boid_turn_margin = boid_turn_margin
         self.resize_event_count = 0
         self.root.bind("<Configure>", self.on_resize)
         self.update_frame()
@@ -61,7 +59,7 @@ class BoidApp:
         """
         self.canvas.delete("all")
         for boid in self.boids:
-            boid.next(self.boids, self.width, self.height, self.boid_turn_margin)
+            boid.next(self.boids, self.width, self.height)
             self.draw_boid(boid)
         self.root.after(17, self.update_frame)  # ~60 FPS
 
