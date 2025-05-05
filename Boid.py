@@ -2,12 +2,30 @@ import Vec as vec
 
 max_speed = 10
 class Boid:
+    """
+    Class for a Boid object, the main object in the simulation.
+    Defines all behaviors of the boid according to the algorithm.
+    """
     def __init__(self, x, y, vx, vy, turn_speed=1.1):
+        """
+        Constructor for a Boid object. Represents position and velocity as 2D vectors.
+        :param x: X position.
+        :param y: Y position.
+        :param vx: X velocity.
+        :param vy: Y velocity.
+        :param turn_speed: Turn speed of the Boid object.
+        """
         self.position = vec.Vec(x,y)        # Position as a vector
         self.velocity = vec.Vec(vx, vy)     # Velocity as a vector
         self.turn_factor = turn_speed
 
     def separation(self, boids):
+        """
+        Method for separation.
+        Boids will steer away from other boids within the desired distance.
+        :param boids: List of Boid objects.
+        :return: Steer vector, to be added to the velocity.
+        """
         desired_separation = 20     # 20 is the sweet spot
         steer = vec.Vec(0, 0)
         count = 0
@@ -28,6 +46,12 @@ class Boid:
         return steer
 
     def alignment(self, boids):
+        """
+        Method for alignment.
+        Boids will steer towards the average velocity of the group of boids, within the preferred distance.
+        :param boids: List of Boid objects.
+        :return: Steer vector, to be added to the velocity.
+        """
         prefer_distance = 25
         avg_vel = vec.Vec(0, 0)
         count = 0
@@ -47,6 +71,12 @@ class Boid:
         return vec.Vec(0, 0)
 
     def cohesion(self, boids):
+        """
+        Method for cohesion.
+        Boids will steer towards the center of the group of boids, within the visible distance.
+        :param boids: List of Boid objects.
+        :return: Desired steer vector, to be added to the velocity.
+        """
         visible_distance = 25
         center = vec.Vec(0, 0)
         count = 0
@@ -65,6 +95,13 @@ class Boid:
         return vec.Vec(0, 0)
 
     def avoid_walls(self, width, height, margin):
+        """
+        Method for avoiding walls.
+        :param width: Width of the window.
+        :param height: Height of the window.
+        :param margin: Margin for avoiding walls.
+        :return: Steer vector to be added to the velocity.
+        """
         steer = vec.Vec(0, 0)
         if self.position.x < margin:
             steer.x = self.turn_factor
@@ -78,6 +115,14 @@ class Boid:
 
 
     def next(self, boids, width, height, margin=50):
+        """
+        Method for updating the Boid object's position and velocity.
+        :param boids: List of Boid objects.
+        :param width: Width of the window.
+        :param height: Height of the window.
+        :param margin: Margin for avoiding walls.
+        :return: Boid's position added to its new velocity.
+        """
         s_f = self.separation(boids)
         a_f = self.alignment(boids)
         c_f = self.cohesion(boids)

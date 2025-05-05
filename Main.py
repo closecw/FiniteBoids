@@ -5,8 +5,20 @@ import Boid as b
 import Vec as vec
 
 class BoidApp:
+    """
+    Class for the main application.
+    Defines the window, boids, and configuration.
+    This is the file that should be run.
+    """
     def __init__(self, root, width=800, height=600, num_boids=75, boid_turn_margin=5.0):
-        # Canvas/window creation
+        """
+        Constructor for the BoidApp, the main application.
+        :param root: Root window, everything will be drawn on this.
+        :param width: Width of the window.
+        :param height: Height of the window.
+        :param num_boids: Number of boids to create.
+        :param boid_turn_margin: Margin for avoiding walls.
+        """
         self.root = root
         self.width = width
         self.height = height
@@ -28,6 +40,11 @@ class BoidApp:
         self.update_frame()
 
     def on_resize(self, event):
+        """
+        Resize event handler. TODO: Fix this if possible.
+        :param event: Resize event.
+        :return: New width and height.
+        """
         self.resize_event_count += 1
         if self.resize_event_count <= 10:
             return
@@ -37,6 +54,11 @@ class BoidApp:
         self.canvas.config(width=self.width, height=self.height)
 
     def update_frame(self):
+        """
+        Method for updating the frame.
+        Calls the next method for each boid and draws them.
+        :return: New frame every 17 ms.
+        """
         self.canvas.delete("all")
         for boid in self.boids:
             boid.next(self.boids, self.width, self.height, self.boid_turn_margin)
@@ -44,6 +66,11 @@ class BoidApp:
         self.root.after(17, self.update_frame)  # ~60 FPS
 
     def draw_boid(self, boid):
+        """
+        Method for drawing a boid.
+        :param boid: Boid object that will be drawn.
+        :return: Triangle drawn for the specified boid.
+        """
         x, y = boid.position.x, boid.position.y
         angle = math.atan2(boid.velocity.y, boid.velocity.x)
         size = 10
@@ -52,6 +79,14 @@ class BoidApp:
 
     @staticmethod
     def get_triangle_points(x, y, angle, size):
+        """
+        Triangle point generator; acts as a helper method.
+        :param x: X (horizontal) coordinate.
+        :param y: Y (vertical) coordinate.
+        :param angle: Angle of the triangle.
+        :param size: Size of the triangle.
+        :return: List of triangle points.
+        """
         front = (x + size * math.cos(angle), y + size * math.sin(angle))
         left = (x + size * math.cos(angle + 2.5), y + size * math.sin(angle + 2.5))
         right = (x + size * math.cos(angle - 2.5), y + size * math.sin(angle - 2.5))
