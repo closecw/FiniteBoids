@@ -1,7 +1,15 @@
 import math
 
 class Vec:
+    """
+    Class for representing 2D vectors.
+    """
     def __init__(self, x, y):
+        """
+        Constructor for a 2D vector.
+        :param x: X (horizontal) component of the vector.
+        :param y: Y (vertical) component of the vector.
+        """
         self.x = x
         self.y = y
 
