@@ -1,8 +1,8 @@
 import Vec as vec
 
-max_speed = 5
+max_speed = 10
 class Boid:
-    def __init__(self, x, y, vx=3, vy=3, turn_speed=0.5):
+    def __init__(self, x, y, vx, vy, turn_speed=1.1):
         self.position = vec.Vec(x,y)        # Position as a vector
         self.velocity = vec.Vec(vx, vy)     # Velocity as a vector
         self.turn_factor = turn_speed
@@ -26,7 +26,6 @@ class Boid:
             if steer.magnitude() > 0:
                 steer.normalize()
             steer *= self.turn_factor
-        steer.limit(max_speed)
         return steer
 
     def alignment(self, boids):
@@ -45,7 +44,6 @@ class Boid:
             avg_vel.normalize()
             avg_vel *= self.turn_factor
             steer = avg_vel - self.velocity
-            steer.limit(max_speed)
             return steer
         return vec.Vec(0, 0)
 
