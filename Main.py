@@ -41,7 +41,7 @@ class BoidApp:
 
     def on_resize(self, event):
         """
-        Resize event handler. TODO: Fix this if possible.
+        Resize event handler.
         :param event: Resize event.
         :return: New width and height.
         """
