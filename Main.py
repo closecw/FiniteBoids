@@ -13,8 +13,12 @@ class BoidApp:
         self.canvas = tk.Canvas(root, width=width, height=height, bg="black")
         self.canvas.pack(fill="both", expand=True)
 
-        starting_pos = range(0, num_boids)
-        self.boids = [b.Boid(starting_pos[_] + width / 2, starting_pos[_] + height / 2, random.randint(-5, 5), random.randint(-5,5)) for _ in range(num_boids)]
+        self.boids = []
+        for _ in range (num_boids):
+            angle = random.uniform(0, 2 * math.pi)
+            speed = random.uniform(1, 3)
+            self.boids.append(b.Boid(random.uniform(0, width), random.uniform(0, height), speed * math.cos(angle), speed * math.sin(angle)))
+
         self.boid_turn_margin = boid_turn_margin
 
         self.resize_event_count = 0
