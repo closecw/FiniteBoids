@@ -8,15 +8,14 @@ class Boid:
         self.turn_factor = turn_speed
 
     def separation(self, boids):
-        desired_separation = 20.0
+        desired_separation = 20     # 20 is the sweet spot
         steer = vec.Vec(0, 0)
         count = 0
         for boid in boids:
             if boid is not self:
                 dist = vec.Vec.distance(self.position, boid.position)
                 if 0 < dist < desired_separation:
-                    diff = self.position - boid.position
-                    diff.normalize()
+                    diff = (self.position - boid.position).normalize()
                     diff /= dist
                     steer += diff
                     count += 1
@@ -29,7 +28,7 @@ class Boid:
         return steer
 
     def alignment(self, boids):
-        prefer_distance = 50
+        prefer_distance = 25
         avg_vel = vec.Vec(0, 0)
         count = 0
         for boid in boids:
@@ -48,7 +47,7 @@ class Boid:
         return vec.Vec(0, 0)
 
     def cohesion(self, boids):
-        visible_distance = 50
+        visible_distance = 25
         center = vec.Vec(0, 0)
         count = 0
         for boid in boids:
@@ -60,8 +59,7 @@ class Boid:
 
         if count > 0:
             center /= count
-            desired = center - self.position
-            desired.normalize()
+            desired = (center - self.position).normalize()
             desired *= self.turn_factor
             return desired
         return vec.Vec(0, 0)
