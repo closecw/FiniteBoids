@@ -5,7 +5,8 @@ import Boid as b
 import Vec as vec
 
 class BoidApp:
-    def __init__(self, root, width=800, height=600, num_boids=50, boid_turn_margin=1):
+    def __init__(self, root, width=800, height=600, num_boids=75, boid_turn_margin=5.0):
+        # Canvas/window creation
         self.root = root
         self.width = width
         self.height = height
@@ -13,14 +14,15 @@ class BoidApp:
         self.canvas = tk.Canvas(root, width=width, height=height, bg="black")
         self.canvas.pack(fill="both", expand=True)
 
+        # Boid creation
         self.boids = []
         for _ in range (num_boids):
             angle = random.uniform(0, 2 * math.pi)
             speed = random.uniform(1, 3)
             self.boids.append(b.Boid(random.uniform(0, width), random.uniform(0, height), speed * math.cos(angle), speed * math.sin(angle)))
 
+        # Property configuration
         self.boid_turn_margin = boid_turn_margin
-
         self.resize_event_count = 0
         self.root.bind("<Configure>", self.on_resize)
         self.update_frame()
@@ -36,11 +38,10 @@ class BoidApp:
 
     def update_frame(self):
         self.canvas.delete("all")
-
         for boid in self.boids:
             boid.next(self.boids, self.width, self.height, self.boid_turn_margin)
             self.draw_boid(boid)
-        self.root.after(16, self.update_frame)  # ~60 FPS
+        self.root.after(17, self.update_frame)  # ~60 FPS
 
     def draw_boid(self, boid):
         x, y = boid.position.x, boid.position.y
