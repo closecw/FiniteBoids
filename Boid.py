@@ -134,3 +134,11 @@ class Boid:
         self.velocity += steer
         self.velocity.limit(max_speed)
         self.position += self.velocity
+
+        '''
+        This works, but it's super jittery. The force limiting helped, but it's not perfect.
+        I'm happy that it works, but not happy with its current result.
+        There's probably some type of smoothing or transition function or something on the velocity we can use.
+        I will probably ask Dutter, Google, and others about ways to fix this tomorrow and Wednesday.
+        Still working out fatigue ideas. Feel free to write whatever.
+        '''
