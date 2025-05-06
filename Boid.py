@@ -18,6 +18,27 @@ class Boid:
         self.position = vec.Vec(x,y)        # Position as a vector
         self.velocity = vec.Vec(vx, vy)     # Velocity as a vector
         self.turn_factor = turn_factor
+        self.fatigue_level = "rested"
+        self.fatigue_count = 0
+
+    '''
+    Fatigue ideas:
+    - This would make it a 5th force in the algorithm, would be added to the velocity in next() method. Up to
+    other ideas and interpretations of this, though. This is just my first idea.
+    - Fatigue levels: rested, tired, fatigued.
+    - Fatigue count: time the boid has been in each level, probably using a timer or by frame or update count.
+    - This specific idea would make all boids fatigued at the same time and same rate, which is fine, but not exactly
+    what Dutter gave us as an idea. Might not be really what we wanted as our main goal. Should really talk about this.
+    
+    - Could maybe do the state machine in Main instead to calculate things? Making this a state machine makes it
+    harder for me to see the best way to do it.
+    
+    - If we want to just do it to the leader of a group, could maybe calculate the boid furthest away from the center 
+    of mass we calculate in cohesion() method. This could be flawed though and lead to inaccurate results, and it would
+    be hard to figure out, though probably not impossible considering the time we have left.
+    '''
+    def fatigue(self):
+        pass
 
     def separation(self, boids):
         """
@@ -136,9 +157,10 @@ class Boid:
         self.position += self.velocity
 
         '''
-        This works, but it's super jittery. The force limiting helped, but it's not perfect.
-        I'm happy that it works, but not happy with its current result.
+        This works, but it's super jittery. The force limiting helped, which is something I saw on the Cornell site, 
+        ...but it's not perfect. Not really happy with the end result right now.
         There's probably some type of smoothing or transition function or something on the velocity we can use.
-        I will probably ask Dutter, Google, and others about ways to fix this tomorrow and Wednesday.
-        Still working out fatigue ideas. Feel free to write whatever.
+        I will probably ask Dutter, Google, and others about ways to fix this on Tuesday and Wednesday.
+        Still working out fatigue ideas, see green comments above. Feel free to write whatever and push whatever. Can
+        always revert back to this working version.
         '''
