@@ -152,9 +152,16 @@ class Boid:
 
         steer = s_f * 1.5 + a_f * 1.0 + c_f * 1.0 + a_w_f * 2.0
         steer.limit(self.turn_factor)
+
+        # Direct add
         self.velocity += steer
         self.velocity.limit(max_speed)
         self.position += self.velocity
+
+        # Linear interpolation
+        # new_vel = self.velocity + steer
+        # self.velocity = self.velocity.linear_interpolate(new_vel, 0.7)
+        # self.position += self.velocity
 
         '''
         This works, but it's super jittery. The force limiting helped, which is something I saw on the Cornell site, 

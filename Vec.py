@@ -67,3 +67,6 @@ class Vec:
 
     def __str__(self):
         return "({}, {})".format(self.x, self.y)
+
+    def linear_interpolate(self, other, t):
+        return Vec(self.x * (1 - t) + other.x * t, self.y * (1 - t) + other.y * t)
