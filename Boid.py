@@ -6,18 +6,18 @@ class Boid:
     Class for a Boid object, the main object in the simulation.
     Defines all behaviors of the boid according to the algorithm.
     """
-    def __init__(self, x, y, vx, vy, turn_speed=1.4):
+    def __init__(self, x, y, vx, vy, turn_factor=1.2):
         """
         Constructor for a Boid object. Represents position and velocity as 2D vectors.
         :param x: X position.
         :param y: Y position.
         :param vx: X velocity.
         :param vy: Y velocity.
-        :param turn_speed: Turn speed of the Boid object.
+        :param turn_factor: Turn speed of the Boid object.
         """
         self.position = vec.Vec(x,y)        # Position as a vector
         self.velocity = vec.Vec(vx, vy)     # Velocity as a vector
-        self.turn_factor = turn_speed
+        self.turn_factor = turn_factor
 
     def separation(self, boids):
         """
@@ -129,6 +129,8 @@ class Boid:
         if width and height:
             a_w_f = self.avoid_walls(width, height)
 
-        self.velocity += s_f + a_f + c_f + a_w_f
+        steer = s_f * 1.5 + a_f * 1.0 + c_f * 1.0 + a_w_f * 2.0
+        steer.limit(self.turn_factor)
+        self.velocity += steer
         self.velocity.limit(max_speed)
         self.position += self.velocity
