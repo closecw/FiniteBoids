@@ -35,6 +35,13 @@ class Boid:
     - This specific idea would make all boids fatigued at the same time and same rate, which is fine, but not exactly
     what Dutter gave us as an idea. Might not be really what we wanted as our main goal. Should really talk about this.
     
+    JAMES: I like this idea ^. I think something we could try is making the fatigue count inversely proportional to
+    the # of neighbors. So the more boids are nearby, the less they get fatigued. Something to note w/ this is that
+    it might affect boids on the outside the same way no matter if they are in front or not, so we might want a new
+    check for neighbors in front of any boid in cohesion(). Then that could be our value. Then while in the fatigued
+    state, we could slowly reduce their fatigue as long as enough boids are nearby. Idk what an elegant way to have
+    the boid move towards the middle of the flock would be though.
+    
     - Could maybe do the state machine in Main instead to calculate things? Making this a state machine makes it
     harder for me to see the best way to do it.
     
@@ -161,13 +168,11 @@ class Boid:
         # Linear interpolation
         new_vel = self.velocity + steer
         self.velocity = self.velocity.linear_interpolate(new_vel, 0.5)
+        self.velocity.limit(max_speed)
         self.position += self.velocity
 
         '''
-        This works, but it's super jittery. The force limiting helped, which is something I saw on the Cornell site, 
-        ...but it's not perfect. Not really happy with the end result right now.
-        There's probably some type of smoothing or transition function or something on the velocity we can use.
-        I will probably ask Dutter, Google, and others about ways to fix this on Tuesday and Wednesday.
-        Still working out fatigue ideas, see green comments above. Feel free to write whatever and push whatever. Can
-        always revert back to this working version.
+        JAMES: Plugged in the linear interpolation that you outlined (needs to be approved) but 
+        even with this the speed still shifts wildly and is lost over time as boids align with others. 
+        I'm sure there is an elegant way to fix this but I haven't figured it out yet.
         '''
