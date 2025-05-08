@@ -18,8 +18,8 @@ class Boid:
         self.position = vec.Vec(x,y)        # Position as a vector
         self.velocity = vec.Vec(vx, vy)     # Velocity as a vector
         self.turn_factor = turn_factor
-        self.fatigue_level = "rested"
-        self.fatigue_count = 0
+        #self.fatigue_level = "rested"
+        #self.fatigue_count = 0
 
     '''
     Fatigue ideas:
@@ -161,20 +161,13 @@ class Boid:
         steer.limit(self.turn_factor)
 
         # Direct add
-        self.velocity += steer
+        new_velocity = self.velocity + steer
+        self.velocity = self.velocity.linear_interpolate(new_velocity, 0.1) #Interpolation with 10% blend (NEEDS APPROVAL)
         self.velocity.limit(max_speed)
         self.position += self.velocity
 
-        # Linear interpolation
-        # new_vel = self.velocity + steer
-        # self.velocity = self.velocity.linear_interpolate(new_vel, 0.7)
-        # self.position += self.velocity
-
         '''
-        This works, but it's super jittery. The force limiting helped, which is something I saw on the Cornell site, 
-        ...but it's not perfect. Not really happy with the end result right now.
-        There's probably some type of smoothing or transition function or something on the velocity we can use.
-        I will probably ask Dutter, Google, and others about ways to fix this on Tuesday and Wednesday.
-        Still working out fatigue ideas, see green comments above. Feel free to write whatever and push whatever. Can
-        always revert back to this working version.
+        JAMES: Plugged in the linear interpolation that you outlined (needs to be approved) but 
+        even with this the speed still shifts wildly and is lost over time as boids align with others. 
+        I'm sure there is an elegant way to fix this but I haven't figured it out yet.
         '''
