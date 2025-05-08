@@ -59,7 +59,7 @@ class BoidApp:
         """
         self.canvas.delete("all")
         for i, boid in enumerate(self.boids):
-            if i is 0:
+            if i == 0:
                 print(f"Red Boid Velocity: x:{boid.velocity.x:.4}, y:{boid.velocity.y:.4}")
             boid.next(self.boids, self.width, self.height)
             self.draw_boid(boid, i)
@@ -76,7 +76,7 @@ class BoidApp:
         angle = math.atan2(boid.velocity.y, boid.velocity.x)
         size = 10
         points = self.get_triangle_points(x, y, angle, size)
-        if i is 0:
+        if i == 0:
             self.canvas.create_polygon(points, fill="red")
         else:
             self.canvas.create_polygon(points, fill="white")
