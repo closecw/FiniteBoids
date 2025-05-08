@@ -62,7 +62,7 @@ class Vec:
 
     @staticmethod
     def distance(v1, v2):
-        return math.sqrt((v1.x - v2.x) ** 2 + (v1.y - v2.y) ** 2)
+        return math.hypot(v1.x - v2.x, v1.y - v2.y)
 
     @staticmethod
     def angleBetween(v1, v2):
