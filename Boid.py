@@ -1,4 +1,5 @@
 import Vec as vec
+import math
 
 max_speed = 10
 class Boid:
@@ -21,6 +22,10 @@ class Boid:
         self.fatigue_level = "rested"
         self.fatigue_count = 0
 
+    def can_see(self, other, angle=(math.radians(160))):
+        direction = other.position - self.position
+        return vec.Vec.angleBetween(direction, self.velocity) <= angle
+
     '''
     Fatigue ideas:
     - This would make it a 5th force in the algorithm, would be added to the velocity in next() method. Up to
@@ -37,8 +42,7 @@ class Boid:
     of mass we calculate in cohesion() method. This could be flawed though and lead to inaccurate results, and it would
     be hard to figure out, though probably not impossible considering the time we have left.
     '''
-    def fatigue(self):
-        pass
+    def fatigue(self): pass
 
     def separation(self, boids):
         """
@@ -53,7 +57,7 @@ class Boid:
         for boid in boids:
             if boid is not self:
                 dist = vec.Vec.distance(self.position, boid.position)
-                if 0 < dist < desired_separation:
+                if 0 < dist < desired_separation and self.can_see(boid):
                     diff = (self.position - boid.position).normalize()
                     diff /= dist
                     steer += diff
@@ -79,7 +83,7 @@ class Boid:
         for boid in boids:
             if boid is not self:
                 dist = vec.Vec.distance(self.position, boid.position)
-                if 0 < dist < prefer_distance:
+                if 0 < dist < prefer_distance and self.can_see(boid):
                     avg_vel += boid.velocity
                     count += 1
 
@@ -104,7 +108,7 @@ class Boid:
         for boid in boids:
             if boid is not self:
                 dist = vec.Vec.distance(self.position, boid.position)
-                if 0 < dist < visible_distance:
+                if 0 < dist < visible_distance and self.can_see(boid):
                     center += boid.position
                     count += 1
 
@@ -153,15 +157,10 @@ class Boid:
         steer = s_f * 1.5 + a_f * 1.0 + c_f * 1.0 + a_w_f * 2.0
         steer.limit(self.turn_factor)
 
-        # Direct add
-        self.velocity += steer
-        self.velocity.limit(max_speed)
-        self.position += self.velocity
-
         # Linear interpolation
-        # new_vel = self.velocity + steer
-        # self.velocity = self.velocity.linear_interpolate(new_vel, 0.7)
-        # self.position += self.velocity
+        new_vel = self.velocity + steer
+        self.velocity = self.velocity.linear_interpolate(new_vel, 0.5)
+        self.position += self.velocity
 
         '''
         This works, but it's super jittery. The force limiting helped, which is something I saw on the Cornell site, 

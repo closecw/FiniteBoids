@@ -63,7 +63,13 @@ class Vec:
 
     @staticmethod
     def angleBetween(v1, v2):
-        return math.acos(v1.dot(v2) / (v1.magnitude() * v2.magnitude()))
+        mag1 = v1.magnitude()
+        mag2 = v2.magnitude()
+        if mag1 == 0 or mag2 == 0:
+            return math.pi
+        dot = v1.dot(v2) / (mag1 * mag2)
+        dot = max(min(dot, 1), -1)
+        return math.acos(dot)
 
     def __str__(self):
         return "({}, {})".format(self.x, self.y)
