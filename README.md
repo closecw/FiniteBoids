@@ -3,8 +3,7 @@ An academic project to demonstrate understanding of Formal Languages, Finite Aut
 
 Contributors: Carter Close, James DeZurik
 
-Current TODOs: 
-- Limit FOV of Boids to 180°
+Current TODOs:
 - Implement fatigue
 - Implement state machine
-- Optimize algorithm
+- Optimize algorithm and program
