@@ -163,7 +163,7 @@ class Boid:
         if width and height:
             a_w_f = self.avoid_walls(width, height)
 
-        steer = s_f * 1.5 + a_f * 1.0 + c_f * 1.0 + a_w_f * 2.0
+        steer = s_f * 1.5 + a_f * 1.3 + c_f * 1.3 + a_w_f * 2.0
         steer.limit(self.turn_factor)
 
         # Linear interpolation
