@@ -30,6 +30,13 @@ class Boid:
     - This specific idea would make all boids fatigued at the same time and same rate, which is fine, but not exactly
     what Dutter gave us as an idea. Might not be really what we wanted as our main goal. Should really talk about this.
     
+    JAMES: I like this idea ^. I think something we could try is making the fatigue count inversely proportional to
+    the # of neighbors. So the more boids are nearby, the less they get fatigued. Something to note w/ this is that
+    it might affect boids on the outside the same way no matter if they are in front or not, so we might want a new
+    check for neighbors in front of any boid in cohesion(). Then that could be our value. Then while in the fatigued
+    state, we could slowly reduce their fatigue as long as enough boids are nearby. Idk what an elegant way to have
+    the boid move towards the middle of the flock would be though.
+    
     - Could maybe do the state machine in Main instead to calculate things? Making this a state machine makes it
     harder for me to see the best way to do it.
     

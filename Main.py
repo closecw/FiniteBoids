@@ -29,7 +29,7 @@ class BoidApp:
         self.boids = []
         for _ in range (num_boids):
             angle = random.uniform(0, 2 * math.pi)
-            speed = random.uniform(1, 3)
+            speed = random.uniform(1, 5)
             self.boids.append(b.Boid(random.uniform(0, width), random.uniform(0, height), speed * math.cos(angle), speed * math.sin(angle)))
 
         # Property configuration
