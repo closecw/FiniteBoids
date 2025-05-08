@@ -48,7 +48,7 @@ class BoidApp:
             return
         self.width = event.width
         self.height = event.height
-        print(f"New Width: {self.width}, New Height: {self.height}")
+        #print(f"New Width: {self.width}, New Height: {self.height}")
         self.canvas.config(width=self.width, height=self.height)
 
     def update_frame(self):
@@ -58,22 +58,28 @@ class BoidApp:
         :return: New frame every 17 ms.
         """
         self.canvas.delete("all")
-        for boid in self.boids:
+        for i, boid in enumerate(self.boids):
+            if i is 0:
+                print(f"Red Boid Velocity: {boid.velocity}")
             boid.next(self.boids, self.width, self.height)
-            self.draw_boid(boid)
+            self.draw_boid(boid, i)
         self.root.after(17, self.update_frame)  # ~60 FPS
 
-    def draw_boid(self, boid):
+    def draw_boid(self, boid, i):
         """
         Method for drawing a boid.
         :param boid: Boid object that will be drawn.
+        :param i: Index of the boid for coloring.
         :return: Triangle drawn for the specified boid.
         """
         x, y = boid.position.x, boid.position.y
         angle = math.atan2(boid.velocity.y, boid.velocity.x)
         size = 10
         points = self.get_triangle_points(x, y, angle, size)
-        self.canvas.create_polygon(points, fill="white")
+        if i is 0:
+            self.canvas.create_polygon(points, fill="red")
+        else:
+            self.canvas.create_polygon(points, fill="white")
 
     @staticmethod
     def get_triangle_points(x, y, angle, size):
