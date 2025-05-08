@@ -50,12 +50,8 @@ class Vec:
             self.y *= limit / mag
         return self
 
-    def heading(self):
-        return math.atan2(self.y, self.x)
-
-    @staticmethod
-    def sub_vector(v1, v2):
-        return Vec(v1.x - v2.x, v1.y - v2.y)
+    def linear_interpolate(self, other, t):
+        return Vec(self.x * (1 - t) + other.x * t, self.y * (1 - t) + other.y * t)
 
     @staticmethod
     def distance(v1, v2):
@@ -73,6 +69,3 @@ class Vec:
 
     def __str__(self):
         return "({}, {})".format(self.x, self.y)
-
-    def linear_interpolate(self, other, t):
-        return Vec(self.x * (1 - t) + other.x * t, self.y * (1 - t) + other.y * t)
