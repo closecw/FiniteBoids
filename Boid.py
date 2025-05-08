@@ -1,5 +1,4 @@
 import Vec as vec
-import math
 
 max_speed = 10
 class Boid:
@@ -19,12 +18,8 @@ class Boid:
         self.position = vec.Vec(x,y)        # Position as a vector
         self.velocity = vec.Vec(vx, vy)     # Velocity as a vector
         self.turn_factor = turn_factor
-        self.fatigue_level = "rested"
-        self.fatigue_count = 0
-
-    def can_see(self, other, angle=(math.radians(160))):
-        direction = other.position - self.position
-        return vec.Vec.angleBetween(direction, self.velocity) <= angle
+        #self.fatigue_level = "rested"
+        #self.fatigue_count = 0
 
     '''
     Fatigue ideas:
@@ -35,6 +30,13 @@ class Boid:
     - This specific idea would make all boids fatigued at the same time and same rate, which is fine, but not exactly
     what Dutter gave us as an idea. Might not be really what we wanted as our main goal. Should really talk about this.
     
+    JAMES: I like this idea ^. I think something we could try is making the fatigue count inversely proportional to
+    the # of neighbors. So the more boids are nearby, the less they get fatigued. Something to note w/ this is that
+    it might affect boids on the outside the same way no matter if they are in front or not, so we might want a new
+    check for neighbors in front of any boid in cohesion(). Then that could be our value. Then while in the fatigued
+    state, we could slowly reduce their fatigue as long as enough boids are nearby. Idk what an elegant way to have
+    the boid move towards the middle of the flock would be though.
+    
     - Could maybe do the state machine in Main instead to calculate things? Making this a state machine makes it
     harder for me to see the best way to do it.
     
@@ -42,7 +44,8 @@ class Boid:
     of mass we calculate in cohesion() method. This could be flawed though and lead to inaccurate results, and it would
     be hard to figure out, though probably not impossible considering the time we have left.
     '''
-    def fatigue(self): pass
+    def fatigue(self):
+        pass
 
     def separation(self, boids):
         """
@@ -57,7 +60,7 @@ class Boid:
         for boid in boids:
             if boid is not self:
                 dist = vec.Vec.distance(self.position, boid.position)
-                if 0 < dist < desired_separation and self.can_see(boid):
+                if 0 < dist < desired_separation:
                     diff = (self.position - boid.position).normalize()
                     diff /= dist
                     steer += diff
@@ -83,7 +86,7 @@ class Boid:
         for boid in boids:
             if boid is not self:
                 dist = vec.Vec.distance(self.position, boid.position)
-                if 0 < dist < prefer_distance and self.can_see(boid):
+                if 0 < dist < prefer_distance:
                     avg_vel += boid.velocity
                     count += 1
 
@@ -108,7 +111,7 @@ class Boid:
         for boid in boids:
             if boid is not self:
                 dist = vec.Vec.distance(self.position, boid.position)
-                if 0 < dist < visible_distance and self.can_see(boid):
+                if 0 < dist < visible_distance:
                     center += boid.position
                     count += 1
 
@@ -157,16 +160,14 @@ class Boid:
         steer = s_f * 1.5 + a_f * 1.0 + c_f * 1.0 + a_w_f * 2.0
         steer.limit(self.turn_factor)
 
-        # Linear interpolation
-        new_vel = self.velocity + steer
-        self.velocity = self.velocity.linear_interpolate(new_vel, 0.5)
+        # Direct add
+        new_velocity = self.velocity + steer
+        self.velocity = self.velocity.linear_interpolate(new_velocity, 0.1) #Interpolation with 10% blend (NEEDS APPROVAL)
+        self.velocity.limit(max_speed)
         self.position += self.velocity
 
         '''
-        This works, but it's super jittery. The force limiting helped, which is something I saw on the Cornell site, 
-        ...but it's not perfect. Not really happy with the end result right now.
-        There's probably some type of smoothing or transition function or something on the velocity we can use.
-        I will probably ask Dutter, Google, and others about ways to fix this on Tuesday and Wednesday.
-        Still working out fatigue ideas, see green comments above. Feel free to write whatever and push whatever. Can
-        always revert back to this working version.
+        JAMES: Plugged in the linear interpolation that you outlined (needs to be approved) but 
+        even with this the speed still shifts wildly and is lost over time as boids align with others. 
+        I'm sure there is an elegant way to fix this but I haven't figured it out yet.
         '''
