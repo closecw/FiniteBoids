@@ -19,8 +19,8 @@ class Boid:
         self.position = vec.Vec(x,y)        # Position as a vector
         self.velocity = vec.Vec(vx, vy)     # Velocity as a vector
         self.turn_factor = turn_factor
-        self.fatigue_level = "rested"
-        self.fatigue_count = 0
+        # self.fatigue_level = "rested"
+        # self.fatigue_count = 0
 
     def can_see(self, other, angle=(math.radians(160))):
         direction = other.position - self.position
@@ -167,7 +167,8 @@ class Boid:
 
         # Linear interpolation
         new_vel = self.velocity + steer
-        self.velocity = self.velocity.linear_interpolate(new_vel, 0.5)
+        # t=0.1 too floaty, t=0.6 too jittery. t=0.45 will do for now?
+        self.velocity = self.velocity.linear_interpolate(new_vel, 0.45)
         self.velocity.limit(max_speed)
         self.position += self.velocity
 
