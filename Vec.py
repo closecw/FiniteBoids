@@ -50,6 +50,13 @@ class Vec:
             self.y *= limit / mag
         return self
 
+    def bottom_limit(self, limit):
+        mag = self.magnitude()
+        if mag < limit and mag != 0:
+            self.x *= (limit / mag)
+            self.y *= (limit / mag)
+        return self
+
     def linear_interpolate(self, other, t):
         return Vec(self.x * (1 - t) + other.x * t, self.y * (1 - t) + other.y * t)
 

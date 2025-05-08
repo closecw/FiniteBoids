@@ -1,7 +1,8 @@
 import Vec as vec
 import math
 
-max_speed = 10
+max_speed = 5
+min_speed = 1
 class Boid:
     """
     Class for a Boid object, the main object in the simulation.
@@ -22,7 +23,7 @@ class Boid:
         # self.fatigue_level = "rested"
         # self.fatigue_count = 0
 
-    def can_see(self, other, angle=(math.radians(160))):
+    def can_see(self, other, angle=(math.radians(150))):
         direction = other.position - self.position
         return vec.Vec.angleBetween(direction, self.velocity) <= angle
 
@@ -170,6 +171,7 @@ class Boid:
         # t=0.1 too floaty, t=0.6 too jittery. t=0.45 will do for now?
         self.velocity = self.velocity.linear_interpolate(new_vel, 0.45)
         self.velocity.limit(max_speed)
+        self.velocity.bottom_limit(min_speed)
         self.position += self.velocity
 
         '''

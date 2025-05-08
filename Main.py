@@ -74,7 +74,7 @@ class BoidApp:
         """
         x, y = boid.position.x, boid.position.y
         angle = math.atan2(boid.velocity.y, boid.velocity.x)
-        size = 10
+        size = 8
         points = self.get_triangle_points(x, y, angle, size)
         if i == 0:
             self.canvas.create_polygon(points, fill="red")
