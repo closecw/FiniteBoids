@@ -20,38 +20,38 @@ class Boid:
         self.position = vec.Vec(x,y)        # Position as a vector
         self.velocity = vec.Vec(vx, vy)     # Velocity as a vector
         self.turn_factor = turn_factor
-        # self.fatigue_level = "rested"
-        # self.fatigue_count = 0
+        self.fatigue = 0.0
+        self.max_fatigue = 50.0
+        self.fatigue_rate = 0.5
 
     def can_see(self, other, angle=(math.radians(150))):
         direction = other.position - self.position
         return vec.Vec.angleBetween(direction, self.velocity) <= angle
 
-    '''
-    Fatigue ideas:
-    - This would make it a 5th force in the algorithm, would be added to the velocity in next() method. Up to
-    other ideas and interpretations of this, though. This is just my first idea.
-    - Fatigue levels: rested, tired, fatigued.
-    - Fatigue count: time the boid has been in each level, probably using a timer or by frame or update count.
-    - This specific idea would make all boids fatigued at the same time and same rate, which is fine, but not exactly
-    what Dutter gave us as an idea. Might not be really what we wanted as our main goal. Should really talk about this.
-    
-    JAMES: I like this idea ^. I think something we could try is making the fatigue count inversely proportional to
-    the # of neighbors. So the more boids are nearby, the less they get fatigued. Something to note w/ this is that
-    it might affect boids on the outside the same way no matter if they are in front or not, so we might want a new
-    check for neighbors in front of any boid in cohesion(). Then that could be our value. Then while in the fatigued
-    state, we could slowly reduce their fatigue as long as enough boids are nearby. Idk what an elegant way to have
-    the boid move towards the middle of the flock would be though.
-    
-    - Could maybe do the state machine in Main instead to calculate things? Making this a state machine makes it
-    harder for me to see the best way to do it.
-    
-    - If we want to just do it to the leader of a group, could maybe calculate the boid furthest away from the center 
-    of mass we calculate in cohesion() method. This could be flawed though and lead to inaccurate results, and it would
-    be hard to figure out, though probably not impossible considering the time we have left.
-    '''
-    def fatigue(self):
-        pass
+    def fatigue_force(self, boids):
+        """
+        Method for fatigue.
+        Boids will slow down (be fatigued) if they are not seeing other boids.
+        If they are seeing other boids, they will speed up again.
+        :param boids: List of Boid objects.
+        :return: Force vector, to be added to the velocity.
+        """
+        visible_distance = 50
+        count = 0
+        for boid in boids:
+            if boid is not self:
+                dist = vec.Vec.distance(self.position, boid.position)
+                if 0 < dist < visible_distance and self.can_see(boid):
+                    count += 1
+
+        if count < 5:
+            self.fatigue += (5 - count) * self.fatigue_rate
+        else:
+            self.fatigue -= (count - 5) * self.fatigue_rate
+
+        self.fatigue = max(0, min(self.fatigue, self.max_fatigue))
+        force = self.velocity.normalize() * -0.03 * self.fatigue
+        return force
 
     def separation(self, boids):
         """
@@ -74,8 +74,7 @@ class Boid:
 
         if count > 0:
             steer /= count
-            if steer.magnitude() > 0:
-                steer.normalize()
+            steer.normalize()
             steer *= self.turn_factor
         return steer
 
@@ -162,8 +161,9 @@ class Boid:
         a_w_f = vec.Vec(0, 0)
         if width and height:
             a_w_f = self.avoid_walls(width, height)
+        f_f = self.fatigue_force(boids)
 
-        steer = s_f * 1.5 + a_f * 1.3 + c_f * 1.3 + a_w_f * 2.0
+        steer = s_f * 1.5 + a_f * 1.3 + c_f * 1.3 + a_w_f * 2.0 + f_f
         steer.limit(self.turn_factor)
 
         # Linear interpolation
@@ -173,9 +173,3 @@ class Boid:
         self.velocity.limit(max_speed)
         self.velocity.bottom_limit(min_speed)
         self.position += self.velocity
-
-        '''
-        JAMES: Plugged in the linear interpolation that you outlined (needs to be approved) but 
-        even with this the speed still shifts wildly and is lost over time as boids align with others. 
-        I'm sure there is an elegant way to fix this but I haven't figured it out yet.
-        '''
