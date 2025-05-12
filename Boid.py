@@ -44,10 +44,10 @@ class Boid:
                 if 0 < dist < visible_distance and self.can_see(boid):
                     count += 1
 
-        if count < 5:
-            self.fatigue += (5 - count) * self.fatigue_rate
+        if count < 4:
+            self.fatigue += (4 - count) * self.fatigue_rate
         else:
-            self.fatigue -= (count - 5) * self.fatigue_rate
+            self.fatigue -= (count - 4) * self.fatigue_rate
 
         self.fatigue = max(0, min(self.fatigue, self.max_fatigue))
         force = self.velocity.normalize() * -0.03 * self.fatigue

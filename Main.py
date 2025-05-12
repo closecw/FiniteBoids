@@ -58,8 +58,7 @@ class BoidApp:
         self.canvas.delete("all")       # Potential optimization?
         for i, boid in enumerate(self.boids):
             if i == 0:
-                print(f"Red Boid Velocity: x:{boid.velocity.x:.4}, y:{boid.velocity.y:.4}, "
-                      f"Speed:{boid.velocity.magnitude():.4}, Fatigue: {boid.fatigue:.4f}")
+                print(f"Red Boid Speed: {boid.velocity.magnitude():.4}, Fatigue: {boid.fatigue:.2f}")
             boid.next(self.boids, self.width, self.height)
             self.draw_boid(boid, i)
         self.root.after(17, self.update_frame)  # ~60 FPS
