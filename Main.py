@@ -75,7 +75,7 @@ class BoidApp:
         size = 8
         points = self.get_triangle_points(x, y, angle, size)
         if boid.fatigue < 20:
-            color = "green"
+            color = "white"
         elif boid.fatigue < 40:
             color = "yellow"
         else:
