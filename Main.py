@@ -78,7 +78,7 @@ class BoidApp:
         size = 8
         points = self.get_triangle_points(x, y, angle, size)
         if i == 0:
-            self.canvas.create_polygon(points, fill="red")
+            color = "red"
         else:
             if boid.fatigue < 20:
                 color = "white"
@@ -86,7 +86,8 @@ class BoidApp:
                 color = "yellow"
             else:
                 color = "green"
-            self.canvas.create_polygon(points, fill=color)
+
+        self.canvas.create_polygon(points, fill=color)
 
     @staticmethod
     def get_triangle_points(x, y, angle, size):
