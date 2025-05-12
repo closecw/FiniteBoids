@@ -2,7 +2,6 @@ import tkinter as tk
 import math
 import random
 import Boid as b
-import Vec as vec
 
 class BoidApp:
     """
@@ -21,7 +20,6 @@ class BoidApp:
         self.root = root
         self.width = width
         self.height = height
-        self.center = vec.Vec(self.width / 2, self.height / 2)
         self.canvas = tk.Canvas(root, width=width, height=height, bg="black")
         self.canvas.pack(fill="both", expand=True)
 
@@ -57,7 +55,7 @@ class BoidApp:
         Calls the next method for each boid and draws them.
         :return: New frame every 17 ms.
         """
-        self.canvas.delete("all")
+        self.canvas.delete("all")       # Potential optimization?
         for i, boid in enumerate(self.boids):
             if i == 0:
                 print(f"Red Boid Velocity: x:{boid.velocity.x:.4}, y:{boid.velocity.y:.4}, "
