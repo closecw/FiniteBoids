@@ -57,11 +57,32 @@ class BoidApp:
         """
         self.canvas.delete("all")       # Potential optimization?
         for i, boid in enumerate(self.boids):
-            if i == 0:
-                print(f"First Boid Speed: {boid.velocity.magnitude():.4}, Fatigue: {boid.fatigue:.2f}")
             boid.next(self.boids, self.width, self.height)
             self.draw_boid(boid, i)
         self.root.after(17, self.update_frame)  # ~60 FPS
+
+    @staticmethod
+    def color(fatigue):
+        """
+        Color gradient state machine.
+        Takes in each Boid's fatigue, will gradient color based on that.
+        :param fatigue: Fatigue of the Boid object.
+        :return: Color values in hex format.
+        """
+        if fatigue < 20:
+            ratio = fatigue / 20
+            r = 255
+            g = 255
+            b = int(255 * (1 - ratio))
+        elif fatigue < 50:
+            ratio = (fatigue - 20) / 30
+            r = 255
+            g = int(255 * (1 - ratio))
+            b = 0
+        else:
+            r, g, b = 255, 0, 0
+
+        return f"#{r:02x}{g:02x}{b:02x}"
 
     def draw_boid(self, boid, i):
         """
@@ -74,13 +95,7 @@ class BoidApp:
         angle = math.atan2(boid.velocity.y, boid.velocity.x)
         size = 8
         points = self.get_triangle_points(x, y, angle, size)
-        if boid.fatigue < 20:
-            color = "white"
-        elif boid.fatigue < 40:
-            color = "yellow"
-        else:
-            color = "red"
-
+        color = self.color(boid.fatigue)
         self.canvas.create_polygon(points, fill=color)
 
     @staticmethod

@@ -1,7 +1,7 @@
 import Vec as vec
 import math
 
-max_speed = 5
+max_speed = 3
 min_speed = 1
 class Boid:
     """
@@ -24,7 +24,7 @@ class Boid:
         self.max_fatigue = 50.0
         self.fatigue_rate = 0.5
 
-    def can_see(self, other, angle=(math.radians(150))):
+    def can_see(self, other, angle=(math.radians(120))):
         direction = other.position - self.position
         return vec.Vec.angleBetween(direction, self.velocity) <= angle
 
@@ -49,7 +49,7 @@ class Boid:
         else:
             self.fatigue -= (count - 4) * self.fatigue_rate
 
-        self.fatigue = max(0, min(self.fatigue, self.max_fatigue))
+        self.fatigue = max(0.0, min(self.fatigue, self.max_fatigue))
         force = self.velocity.normalize() * -0.03 * self.fatigue
         return force
 
@@ -146,7 +146,6 @@ class Boid:
             steer.y = -self.turn_factor
         return steer
 
-
     def next(self, boids, width, height):
         """
         Method for updating the Boid object's position and velocity.
@@ -166,10 +165,9 @@ class Boid:
         steer = s_f * 1.5 + a_f * 1.3 + c_f * 1.3 + a_w_f * 2.0 + f_f
         steer.limit(self.turn_factor)
 
-        # Linear interpolation
         new_vel = self.velocity + steer
-        # t=0.1 too floaty, t=0.6 too jittery. t=0.45 will do for now?
         self.velocity = self.velocity.linear_interpolate(new_vel, 0.45)
+        self.velocity *= 2      # Artificial increase, needed for Boids to actually have a decent speed
         self.velocity.limit(max_speed)
         self.velocity.bottom_limit(min_speed)
         self.position += self.velocity
