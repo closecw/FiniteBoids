@@ -58,7 +58,7 @@ class BoidApp:
         self.canvas.delete("all")       # Potential optimization?
         for i, boid in enumerate(self.boids):
             if i == 0:
-                print(f"Red Boid Speed: {boid.velocity.magnitude():.4}, Fatigue: {boid.fatigue:.2f}")
+                print(f"First Boid Speed: {boid.velocity.magnitude():.4}, Fatigue: {boid.fatigue:.2f}")
             boid.next(self.boids, self.width, self.height)
             self.draw_boid(boid, i)
         self.root.after(17, self.update_frame)  # ~60 FPS
@@ -74,15 +74,12 @@ class BoidApp:
         angle = math.atan2(boid.velocity.y, boid.velocity.x)
         size = 8
         points = self.get_triangle_points(x, y, angle, size)
-        if i == 0:
-            color = "red"
+        if boid.fatigue < 20:
+            color = "green"
+        elif boid.fatigue < 40:
+            color = "yellow"
         else:
-            if boid.fatigue < 20:
-                color = "white"
-            elif boid.fatigue < 40:
-                color = "yellow"
-            else:
-                color = "green"
+            color = "red"
 
         self.canvas.create_polygon(points, fill=color)
 
