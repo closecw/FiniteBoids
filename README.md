@@ -1,7 +1,10 @@
 # Boids Simulation
 An academic project to demonstrate understanding of **Formal Languages**, **Finite Automata**, and **Computability Theory** through a Boids (Bird-oid objects) simulation.
 
-**Contributors:** Carter Close, James DeZurik
+**Original Attributions**: Carter Close, James DeZurik.
+
+This fork is a personal fork to expand on the project individually. 
+I wrote the **Boid.py** file, which implements the full algorithm along with fatigue. I was a 50/50 collaborator on the other two files included.
 
 ## Overview
 Boids is an artificial life simulation created to model bird flocking patterns. Originally created by Craig Reynolds, the main algorithm is determined by three unique principles:
