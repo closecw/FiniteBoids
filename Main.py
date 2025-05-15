@@ -58,7 +58,7 @@ class BoidApp:
         self.canvas.delete("all")       # Potential optimization?
         for i, boid in enumerate(self.boids):
             boid.next(self.boids, self.width, self.height)
-            self.draw_boid(boid, i)
+            self.draw_boid(boid)
         self.root.after(17, self.update_frame)  # ~60 FPS
 
     @staticmethod
@@ -84,11 +84,10 @@ class BoidApp:
 
         return f"#{r:02x}{g:02x}{b:02x}"
 
-    def draw_boid(self, boid, i):
+    def draw_boid(self, boid):
         """
         Method for drawing a boid.
         :param boid: Boid object that will be drawn.
-        :param i: Index of the boid for coloring.
         :return: Triangle drawn for the specified boid.
         """
         x, y = boid.position.x, boid.position.y
